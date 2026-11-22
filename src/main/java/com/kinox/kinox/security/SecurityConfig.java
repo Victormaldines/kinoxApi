@@ -71,12 +71,12 @@ public class SecurityConfig {
                         .authenticationEntryPoint((request, response, authException) -> {
                             response.setStatus(HttpStatus.UNAUTHORIZED.value());
                             response.setContentType("application/json;charset=UTF-8");
-                            response.getWriter().write("{"error":"Não autenticado ou token inválido."}");
+                            response.getWriter().write("{'error':'Não autenticado ou token inválido.'}");
                         })
                         .accessDeniedHandler((request, response, accessDeniedException) -> {
                             response.setStatus(HttpStatus.FORBIDDEN.value());
                             response.setContentType("application/json;charset=UTF-8");
-                            response.getWriter().write("{"error":"Acesso negado para o seu perfil."}");
+                            response.getWriter().write("{'error':'Acesso negado para o seu perfil.'}");
                         })
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
