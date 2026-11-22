@@ -4,6 +4,7 @@ import com.kinox.kinox.entity.Filme;
 import lombok.Builder;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Builder
 public record SessaoResponse (
@@ -11,5 +12,7 @@ public record SessaoResponse (
         boolean disponibilidade,
         LocalDate data,
         int horarioInicio,
-        FilmeResponse filme
+        FilmeResponse filme,
+        SalaResponse sala,
+        List<SessaoAssentoResponse> sessaoAssentos
 ) {}

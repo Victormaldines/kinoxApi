@@ -22,6 +22,7 @@ public class SessaoController {
 
     @GetMapping("/{id}")
     public ResponseEntity<SessaoResponse> findSessaoById(@PathVariable Long id) {
+        System.out.println(sessaoService.findSessaoById(id));
         return sessaoService.findSessaoById(id)
                 .map(sessao -> ResponseEntity.ok(SessaoMapper.toSessaoResponse(sessao)))
                 .orElse(ResponseEntity.notFound().build());

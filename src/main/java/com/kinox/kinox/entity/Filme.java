@@ -44,7 +44,7 @@ public class Filme {
     @Column(name = "updated_at")
     private LocalDate updatedAt;
 
-    @ManyToMany
+    @ManyToMany()
     @JoinTable(name = "filme_genero",
             joinColumns = @JoinColumn(name = "filme_id"),
             inverseJoinColumns = @JoinColumn(name = "genero_id")

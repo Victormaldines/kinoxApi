@@ -8,22 +8,36 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class FilmeService {
 
-    private final FilmeRepository filmesRepository;
+    private final FilmeRepository filmeRepository;
     private final GeneroRepository generoRepository;
 
     public List<Filme> findAllFilmes() {
-        return filmesRepository.findAll();
+        return filmeRepository.findAll();
+    }
+
+    public Optional<Filme> findFilmeById(Long id) {
+        return filmeRepository.findById(id);
     }
 
     public Filme saveFilme(Filme filme) {
         filme.setGeneros(findGeneros(filme.getGeneros()));
 
-        return filmesRepository.save(filme);
+        return filmeRepository.save(filme);
+    }
+
+    public Filme updateFilme(Long id, Filme filme) {
+        filme.setId(id);
+        return filmeRepository.save(filme);
+    }
+
+    public void deleteFilmeById(Long id) {
+        filmeRepository.deleteById(id);
     }
 
     private List<Genero> findGeneros(List<Genero> generos) {
