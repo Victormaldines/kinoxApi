@@ -1,19 +1,25 @@
 package com.kinox.kinox.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lombok.*;
 
+@Entity
+@Table(name = "ingresso")
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@Builder
 public class Ingresso {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sessao_id", nullable = false)
     private Sessao sessao;
 
-    @Column(name = "is_inteira")
-    boolean isInteira;
-
+    @Column(nullable = false)
+    private boolean inteira;
 }
