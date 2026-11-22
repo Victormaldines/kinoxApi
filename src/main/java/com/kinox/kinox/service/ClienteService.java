@@ -14,11 +14,7 @@ public class ClienteService {
 
     private final ClienteRepository clienteRepository;
 
-    public Cliente saveCliente(Cliente cliente) {
-        return clienteRepository.save(cliente);
-    }
-
-    public List<Cliente> findAll() {
+    public List<Cliente> findAllClientes() {
         return clienteRepository.findAll();
     }
 
@@ -26,7 +22,17 @@ public class ClienteService {
         return clienteRepository.findById(id);
     }
 
+    public Cliente saveCliente(Cliente cliente) {
+        return clienteRepository.save(cliente);
+    }
+
+    public Cliente updateCliente(Long id, Cliente cliente) {
+        cliente.setId(id);
+        return clienteRepository.save(cliente);
+    }
+
     public void deleteClienteById(Long id) {
         clienteRepository.deleteById(id);
     }
+
 }

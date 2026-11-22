@@ -1,13 +1,13 @@
 package com.kinox.kinox.controller.request;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.time.LocalTime;
 
 public record SessaoRequest(
         Long filmeId,
         Long salaId,
         boolean disponibilidade,
         LocalDate data,
-        int horarioInicio,
-        List<Long> sessaoAssentosId
+        LocalTime horarioInicio,
+        boolean isLegendado
 ) {}

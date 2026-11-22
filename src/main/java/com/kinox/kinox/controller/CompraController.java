@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/compras")
@@ -20,41 +21,44 @@ public class CompraController {
     private final CompraService compraService;
 
     @GetMapping
-    public ResponseEntity<List<CompraResponse>> findAll() {
-        List<CompraResponse> compras = compraService.findAll().stream()
+    public ResponseEntity<List<CompraResponse>> findAllCompras() {
+        List<CompraResponse> compras = compraService.findAllCompras().stream()
                 .map(CompraMapper::toCompraResponse)
                 .toList();
         return ResponseEntity.ok(compras);
     }
 
     @GetMapping("/cliente/{clienteId}")
-    public ResponseEntity<List<CompraResponse>> findByClienteId(@PathVariable Long clienteId) {
-        List<CompraResponse> compras = compraService.findByClienteId(clienteId).stream()
+    public ResponseEntity<List<CompraResponse>> findComprasByClienteId(@PathVariable Long clienteId) {
+        List<CompraResponse> compras = compraService.findComprasByClienteId(clienteId).stream()
                 .map(CompraMapper::toCompraResponse)
                 .toList();
         return ResponseEntity.ok(compras);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CompraResponse> findById(@PathVariable Long id) {
+    public ResponseEntity<CompraResponse> findCompraById(@PathVariable Long id) {
         return compraService.findCompraById(id)
                 .map(compra -> ResponseEntity.ok(CompraMapper.toCompraResponse(compra)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<CompraResponse> save(@RequestBody CompraRequest request) {
-        Compra saved = compraService.saveCompra(CompraMapper.toCompra(request));
+    public ResponseEntity<CompraResponse> saveCompra(@RequestBody CompraRequest compraRequest) {
+        Compra savedCompra = compraService.saveCompra(CompraMapper.toCompra(compraRequest));
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(CompraMapper.toCompraResponse(saved));
+                .body(CompraMapper.toCompraResponse(savedCompra));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        if (compraService.findCompraById(id).isPresent()) {
+    public ResponseEntity<Void> deleteCompra(@PathVariable Long id) {
+        Optional<Compra> optCompra = compraService.findCompraById(id);
+
+        if (optCompra.isPresent()) {
             compraService.deleteCompraById(id);
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();
     }
+
 }

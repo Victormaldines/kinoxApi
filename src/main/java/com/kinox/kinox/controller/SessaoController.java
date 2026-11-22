@@ -6,7 +6,6 @@ import com.kinox.kinox.entity.Sessao;
 import com.kinox.kinox.mapper.SessaoMapper;
 import com.kinox.kinox.service.SessaoService;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,14 +21,10 @@ public class SessaoController {
 
     @GetMapping("/{id}")
     public ResponseEntity<SessaoResponse> findSessaoById(@PathVariable Long id) {
-        System.out.println(sessaoService.findSessaoById(id));
         return sessaoService.findSessaoById(id)
                 .map(sessao -> ResponseEntity.ok(SessaoMapper.toSessaoResponse(sessao)))
                 .orElse(ResponseEntity.notFound().build());
-
     }
-
-    // GetSessaoByIsDisponibilidade
 
     @PostMapping
     public ResponseEntity<SessaoResponse> saveSessao(@RequestBody SessaoRequest sessaoRequest) {
@@ -44,7 +39,7 @@ public class SessaoController {
     public ResponseEntity<Void> deleteSessao(@PathVariable Long id) {
         Optional<Sessao> optSessao = sessaoService.findSessaoById(id);
 
-        if(optSessao.isPresent()) {
+        if (optSessao.isPresent()) {
             sessaoService.deleteSessaoById(id);
             return ResponseEntity.noContent().build();
         }

@@ -3,7 +3,6 @@ package com.kinox.kinox.mapper;
 import com.kinox.kinox.controller.request.SessaoAssentoRequest;
 import com.kinox.kinox.controller.response.AssentoResponse;
 import com.kinox.kinox.controller.response.SessaoAssentoResponse;
-import com.kinox.kinox.controller.response.SessaoResponse;
 import com.kinox.kinox.entity.Assento;
 import com.kinox.kinox.entity.Sessao;
 import com.kinox.kinox.entity.SessaoAssento;
@@ -25,6 +24,7 @@ public class SessaoAssentoMapper {
         AssentoResponse assentoResponse = AssentoMapper.toAssentoResponse(sessaoAssento.getAssento());
 
         return SessaoAssentoResponse.builder()
+                .id(sessaoAssento.getId())
                 .assento(assentoResponse)
                 .isOcupado(sessaoAssento.isOcupado())
                 .build();

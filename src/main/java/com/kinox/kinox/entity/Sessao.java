@@ -4,10 +4,11 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @Entity
-@Table(name="sessao")
+@Table(name = "sessao")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -25,9 +26,11 @@ public class Sessao {
     private LocalDate data;
 
     @Column(name = "horario_inicio")
-    private int horarioInicio;
+    private LocalTime horarioInicio;
 
-    //@ManyToOne(fetch = FetchType.LAZY)
+    @Column(name = "is_legendado", nullable = false)
+    private boolean isLegendado = false;
+
     @ManyToOne
     @JoinColumn(name = "filme_id", nullable = false)
     private Filme filme;
@@ -43,4 +46,3 @@ public class Sessao {
     )
     private List<SessaoAssento> sessoesAssentos;
 }
-// ih calma

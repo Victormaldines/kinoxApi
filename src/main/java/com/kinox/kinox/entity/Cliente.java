@@ -3,6 +3,8 @@ package com.kinox.kinox.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
+
 @Entity
 @Table(name = "cliente")
 @NoArgsConstructor
@@ -16,20 +18,18 @@ public class Cliente {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, length = 14)
     private String cpf;
-
-    @Column(name = "met_pagamento")
-    private String metPagamento;
 
     @Column(nullable = false)
     private String nome;
 
-    private String nascimento;
+    private LocalDate nascimento;
 
     @Column(nullable = false)
     private String senha;
 
     @Column(nullable = false, unique = true)
     private String email;
+
 }

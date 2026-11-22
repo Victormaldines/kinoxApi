@@ -6,14 +6,13 @@ import com.kinox.kinox.entity.Cliente;
 
 public class ClienteMapper {
 
-    public static Cliente toCliente(ClienteRequest request) {
+    public static Cliente toCliente(ClienteRequest clienteRequest) {
         return Cliente.builder()
-                .cpf(request.cpf())
-                .metPagamento(request.metPagamento())
-                .nome(request.nome())
-                .nascimento(request.nascimento())
-                .senha(request.senha())
-                .email(request.email())
+                .cpf(clienteRequest.cpf())
+                .nome(clienteRequest.nome())
+                .nascimento(clienteRequest.nascimento())
+                .senha(clienteRequest.senha())
+                .email(clienteRequest.email())
                 .build();
     }
 
@@ -21,10 +20,10 @@ public class ClienteMapper {
         return ClienteResponse.builder()
                 .id(cliente.getId())
                 .cpf(cliente.getCpf())
-                .metPagamento(cliente.getMetPagamento())
                 .nome(cliente.getNome())
                 .nascimento(cliente.getNascimento())
                 .email(cliente.getEmail())
                 .build();
     }
+
 }

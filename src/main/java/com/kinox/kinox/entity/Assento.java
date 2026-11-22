@@ -3,8 +3,6 @@ package com.kinox.kinox.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
-
 @Entity
 @Table(name = "assento")
 @NoArgsConstructor
@@ -19,5 +17,9 @@ public class Assento {
     private Long id;
 
     private int numero;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sala_id")
+    private Sala sala;
 
 }

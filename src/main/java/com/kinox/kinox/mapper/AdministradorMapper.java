@@ -13,10 +13,11 @@ public class AdministradorMapper {
                 .build();
     }
 
-    public static AdministradorResponse toAdministradorResponse(Administrador admin) {
+    public static AdministradorResponse toAdministradorResponse(Administrador administrador) {
         return AdministradorResponse.builder()
-                .id(admin.getId())
-                .login(admin.getLogin())
+                .id(administrador.getId())
+                .login(administrador.getLogin())
                 .build();
     }
+
 }

@@ -1,17 +1,18 @@
 package com.kinox.kinox.controller.response;
 
-import com.kinox.kinox.entity.Filme;
 import lombok.Builder;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @Builder
-public record SessaoResponse (
+public record SessaoResponse(
         Long id,
         boolean disponibilidade,
         LocalDate data,
-        int horarioInicio,
+        LocalTime horarioInicio,
+        boolean isLegendado,
         FilmeResponse filme,
         SalaResponse sala,
         List<SessaoAssentoResponse> sessaoAssentos

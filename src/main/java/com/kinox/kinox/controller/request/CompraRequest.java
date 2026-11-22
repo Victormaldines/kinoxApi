@@ -1,3 +1,9 @@
 package com.kinox.kinox.controller.request;
 
-public record CompraRequest(Long ingressoId, Long clienteId) {}
+import java.util.List;
+
+public record CompraRequest(
+        Long clienteId,
+        String metPagamento,
+        List<IngressoRequest> ingressos
+) {}

@@ -8,7 +8,6 @@ import com.kinox.kinox.controller.response.SessaoResponse;
 import com.kinox.kinox.entity.Filme;
 import com.kinox.kinox.entity.Sala;
 import com.kinox.kinox.entity.Sessao;
-import com.kinox.kinox.entity.SessaoAssento;
 
 import java.util.List;
 
@@ -17,32 +16,32 @@ public class SessaoMapper {
     public static Sessao toSessao(SessaoRequest sessaoRequest) {
         Filme filme = Filme.builder().id(sessaoRequest.filmeId()).build();
         Sala sala = Sala.builder().id(sessaoRequest.salaId()).build();
-        List<SessaoAssento> sessaoAssentos = sessaoRequest.sessaoAssentosId().stream()
-                .map(sessaoAssentoId -> SessaoAssento.builder().id(sessaoAssentoId).build())
-                .toList();
 
         return Sessao.builder()
                 .disponibilidade(sessaoRequest.disponibilidade())
                 .data(sessaoRequest.data())
                 .horarioInicio(sessaoRequest.horarioInicio())
+                .isLegendado(sessaoRequest.isLegendado())
                 .filme(filme)
                 .sala(sala)
-                .sessoesAssentos(sessaoAssentos)
                 .build();
     }
 
     public static SessaoResponse toSessaoResponse(Sessao sessao) {
         FilmeResponse filmeResponse = FilmeMapper.toFilmeResponse(sessao.getFilme());
         SalaResponse salaResponse = SalaMapper.toSalaResponse(sessao.getSala());
-        List<SessaoAssentoResponse> sessaoAssentoResponses = sessao.getSessoesAssentos().stream()
-                .map(SessaoAssentoMapper::toSessaoAssentoResponse)
-                .toList();
+        List<SessaoAssentoResponse> sessaoAssentoResponses = sessao.getSessoesAssentos() != null
+                ? sessao.getSessoesAssentos().stream()
+                    .map(SessaoAssentoMapper::toSessaoAssentoResponse)
+                    .toList()
+                : List.of();
 
         return SessaoResponse.builder()
                 .id(sessao.getId())
                 .disponibilidade(sessao.isDisponibilidade())
                 .data(sessao.getData())
                 .horarioInicio(sessao.getHorarioInicio())
+                .isLegendado(sessao.isLegendado())
                 .filme(filmeResponse)
                 .sala(salaResponse)
                 .sessaoAssentos(sessaoAssentoResponses)

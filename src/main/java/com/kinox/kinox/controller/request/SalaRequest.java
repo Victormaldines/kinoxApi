@@ -1,13 +1,12 @@
 package com.kinox.kinox.controller.request;
 
-import java.util.List;
+import java.math.BigDecimal;
 
 public record SalaRequest(
         int numero,
-        double precoDoIngresso,
+        BigDecimal precoDoIngresso,
         int qtdAssentos,
         boolean is3d,
         boolean isDisponivel,
-        boolean isLegendado,
         boolean isImax
 ) {}

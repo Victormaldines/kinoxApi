@@ -1,10 +1,11 @@
 package com.kinox.kinox.controller.request;
 
+import java.time.LocalDate;
+
 public record ClienteRequest(
         String cpf,
-        String metPagamento,
         String nome,
-        String nascimento,
+        LocalDate nascimento,
         String senha,
         String email
 ) {}

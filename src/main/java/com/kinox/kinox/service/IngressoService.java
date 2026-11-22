@@ -1,9 +1,11 @@
 package com.kinox.kinox.service;
 
+import com.kinox.kinox.entity.Compra;
 import com.kinox.kinox.entity.Ingresso;
-import com.kinox.kinox.entity.Sessao;
+import com.kinox.kinox.entity.SessaoAssento;
+import com.kinox.kinox.repository.CompraRepository;
 import com.kinox.kinox.repository.IngressoRepository;
-import com.kinox.kinox.repository.SessaoRepository;
+import com.kinox.kinox.repository.SessaoAssentoRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,16 +18,10 @@ import java.util.Optional;
 public class IngressoService {
 
     private final IngressoRepository ingressoRepository;
-    private final SessaoRepository sessaoRepository;
+    private final CompraRepository compraRepository;
+    private final SessaoAssentoRepository sessaoAssentoRepository;
 
-    @Transactional
-    public Ingresso saveIngresso(Ingresso ingresso) {
-        Sessao sessao = sessaoRepository.findById(ingresso.getSessao().getId()).orElseThrow();
-        ingresso.setSessao(sessao);
-        return ingressoRepository.save(ingresso);
-    }
-
-    public List<Ingresso> findAll() {
+    public List<Ingresso> findAllIngressos() {
         return ingressoRepository.findAll();
     }
 
@@ -33,7 +29,22 @@ public class IngressoService {
         return ingressoRepository.findById(id);
     }
 
+    @Transactional
     public void deleteIngressoById(Long id) {
-        ingressoRepository.deleteById(id);
+        ingressoRepository.findById(id).ifPresent(ingresso -> {
+            SessaoAssento sessaoAssento = ingresso.getSessaoAssento();
+            sessaoAssento.setOcupado(false);
+            sessaoAssentoRepository.save(sessaoAssento);
+
+            Compra compra = ingresso.getCompra();
+            if (compra != null) {
+                compra.setValorTotal(compra.getValorTotal().subtract(ingresso.getValorPago()));
+                compra.getIngressos().remove(ingresso);
+                compraRepository.save(compra);
+            } else {
+                ingressoRepository.delete(ingresso);
+            }
+        });
     }
+
 }

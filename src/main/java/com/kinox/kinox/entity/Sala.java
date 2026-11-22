@@ -3,6 +3,7 @@ package com.kinox.kinox.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
@@ -20,8 +21,8 @@ public class Sala {
 
     private int numero;
 
-    @Column(name = "preco_do_ingresso")
-    private double precoDoIngresso;
+    @Column(name = "preco_do_ingresso", precision = 10, scale = 2)
+    private BigDecimal precoDoIngresso;
 
     @Column(name = "qtd_assentos")
     private int qtdAssentos;
@@ -32,9 +33,6 @@ public class Sala {
     @Column(name = "is_disponivel", nullable = false)
     private boolean isDisponivel = true;
 
-    @Column(name = "is_legendado", nullable = false)
-    private boolean isLegendado = false;
-
     @Column(name = "is_imax", nullable = false)
     private boolean isImax = false;
 
@@ -44,4 +42,11 @@ public class Sala {
             orphanRemoval = true
     )
     private List<Sessao> sessoes;
+
+    @OneToMany(
+            mappedBy = "sala",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<Assento> assentos;
 }

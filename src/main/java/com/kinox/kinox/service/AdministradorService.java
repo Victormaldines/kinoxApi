@@ -14,11 +14,7 @@ public class AdministradorService {
 
     private final AdministradorRepository administradorRepository;
 
-    public Administrador saveAdministrador(Administrador admin) {
-        return administradorRepository.save(admin);
-    }
-
-    public List<Administrador> findAll() {
+    public List<Administrador> findAllAdministradores() {
         return administradorRepository.findAll();
     }
 
@@ -26,7 +22,12 @@ public class AdministradorService {
         return administradorRepository.findById(id);
     }
 
+    public Administrador saveAdministrador(Administrador administrador) {
+        return administradorRepository.save(administrador);
+    }
+
     public void deleteAdministradorById(Long id) {
         administradorRepository.deleteById(id);
     }
+
 }
