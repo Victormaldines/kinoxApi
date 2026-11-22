@@ -1,19 +1,42 @@
 package com.kinox.kinox.controller;
 
+import com.kinox.kinox.controller.request.FilmeRequest;
+import com.kinox.kinox.controller.response.FilmeResponse;
+import com.kinox.kinox.entity.Filme;
+import com.kinox.kinox.mapper.FilmeMapper;
 import com.kinox.kinox.service.FilmeService;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/filmes")
+@RequiredArgsConstructor
 public class FilmeController {
 
     private final FilmeService filmeService;
 
-    public FilmeController(FilmeService filmeService) {
-        this.filmeService = filmeService;
+    @GetMapping
+    public ResponseEntity<List<FilmeResponse>> findAllFilmes() {
+        List<Filme> filmes = filmeService.findAllFilmes();
+        List<FilmeResponse> filmeResponses = filmes.stream()
+                .map(FilmeMapper::toFilmeResponse)
+                .toList();
+
+        return ResponseEntity.ok(filmeResponses);
     }
 
+    @PostMapping
+    public ResponseEntity<FilmeResponse> saveFilme(@RequestBody FilmeRequest filmeRequest) {
+        Filme filme = FilmeMapper.toFilme(filmeRequest);
+        Filme savedFilme = filmeService.saveFilme(filme);
+        FilmeResponse filmeResponse = FilmeMapper.toFilmeResponse(savedFilme);
 
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(filmeResponse);
+    }
 
 }

@@ -1,10 +1,7 @@
 package com.kinox.kinox.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -17,6 +14,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Filme {
 
     @Id
@@ -52,5 +50,12 @@ public class Filme {
             inverseJoinColumns = @JoinColumn(name = "genero_id")
     )
     private List<Genero> generos;
+
+    @OneToMany(
+        mappedBy = "filme",
+        cascade = CascadeType.ALL,
+        orphanRemoval = true
+    )
+    private List<Sessao> sessoes;
 
 }

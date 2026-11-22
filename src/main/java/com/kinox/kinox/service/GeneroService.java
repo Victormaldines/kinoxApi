@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -15,6 +16,10 @@ public class GeneroService {
 
     public List<Genero> findAllGeneros() {
         return generoRepository.findAll();
+    }
+
+    public Optional<Genero> findGeneroById(Long id) {
+        return generoRepository.findById(id);
     }
 
     public Genero saveGenero(Genero genero) {
