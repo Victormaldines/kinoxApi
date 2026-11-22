@@ -1,7 +1,8 @@
 CREATE TABLE compra (
     id SERIAL PRIMARY KEY,
-    ingresso_id BIGINT NOT NULL,
-    cliente_id BIGINT NOT NULL,
-    CONSTRAINT fk_compra_ingresso FOREIGN KEY (ingresso_id) REFERENCES ingresso(id),
+    cliente_id INTEGER NOT NULL,
+    valor_total NUMERIC(10, 2) NOT NULL,
+    met_pagamento VARCHAR(50) NOT NULL,
+    data_compra TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_compra_cliente FOREIGN KEY (cliente_id) REFERENCES cliente(id)
 );
