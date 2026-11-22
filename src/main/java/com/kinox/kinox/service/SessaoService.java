@@ -19,6 +19,10 @@ public class SessaoService {
     private final SalaRepository salaRepository;
     private final AssentoRepository assentoRepository;
 
+    public List<Sessao> findAllSessoes() {
+        return sessaoRepository.findAll();
+    }
+
     @Transactional
     public Sessao saveSessao(Sessao sessao) {
         sessao.setFilme(findFilmes(sessao.getFilme()));

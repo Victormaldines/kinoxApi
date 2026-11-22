@@ -30,6 +30,13 @@ public class FilmeController {
         return ResponseEntity.ok(filmeResponses);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<FilmeResponse> findFilmeById(@PathVariable Long id) {
+        return filmeService.findFilmeById(id)
+                .map(filme -> ResponseEntity.ok(FilmeMapper.toFilmeResponse(filme)))
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     @PostMapping
     public ResponseEntity<FilmeResponse> saveFilme(@RequestBody FilmeRequest filmeRequest) {
         Filme filme = FilmeMapper.toFilme(filmeRequest);

@@ -12,7 +12,9 @@ import java.util.List;
 public class CompraMapper {
 
     public static Compra toCompra(CompraRequest compraRequest) {
-        Cliente cliente = Cliente.builder().id(compraRequest.clienteId()).build();
+        Cliente cliente = compraRequest.clienteId() != null
+                ? Cliente.builder().id(compraRequest.clienteId()).build()
+                : null;
         List<Ingresso> ingressos = compraRequest.ingressos() != null
                 ? compraRequest.ingressos().stream()
                     .map(IngressoMapper::toIngresso)

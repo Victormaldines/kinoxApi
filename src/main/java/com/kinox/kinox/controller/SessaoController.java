@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -18,6 +19,14 @@ import java.util.Optional;
 public class SessaoController {
 
     private final SessaoService sessaoService;
+
+    @GetMapping
+    public ResponseEntity<List<SessaoResponse>> findAllSessoes() {
+        List<SessaoResponse> sessoes = sessaoService.findAllSessoes().stream()
+                .map(SessaoMapper::toSessaoResponse)
+                .toList();
+        return ResponseEntity.ok(sessoes);
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<SessaoResponse> findSessaoById(@PathVariable Long id) {

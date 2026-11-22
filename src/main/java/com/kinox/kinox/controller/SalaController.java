@@ -29,6 +29,13 @@ public class SalaController {
         return ResponseEntity.ok(salaResponses);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<SalaResponse> findSalaById(@PathVariable Long id) {
+        return salaService.findSalaById(id)
+                .map(sala -> ResponseEntity.ok(SalaMapper.toSalaResponse(sala)))
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     @PostMapping
     public ResponseEntity<SalaResponse> saveSala(@RequestBody SalaRequest salaRequest) {
         Sala sala = SalaMapper.toSala(salaRequest);

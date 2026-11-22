@@ -4,10 +4,13 @@ import com.kinox.kinox.controller.request.ClienteRequest;
 import com.kinox.kinox.controller.response.ClienteResponse;
 import com.kinox.kinox.entity.Cliente;
 import com.kinox.kinox.mapper.ClienteMapper;
+import com.kinox.kinox.security.JWTUserData;
+import com.kinox.kinox.security.Role;
 import com.kinox.kinox.service.ClienteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,8 +31,33 @@ public class ClienteController {
         return ResponseEntity.ok(clientes);
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<ClienteResponse> findAuthenticatedCliente(Authentication authentication) {
+        JWTUserData user = (JWTUserData) authentication.getPrincipal();
+        return clienteService.findClienteById(user.userId())
+                .map(cliente -> ResponseEntity.ok(ClienteMapper.toClienteResponse(cliente)))
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/me")
+    public ResponseEntity<ClienteResponse> updateAuthenticatedCliente(
+            @RequestBody ClienteRequest clienteRequest,
+            Authentication authentication) {
+        JWTUserData user = (JWTUserData) authentication.getPrincipal();
+        if (clienteService.findClienteById(user.userId()).isPresent()) {
+            Cliente cliente = clienteService.updateCliente(user.userId(), ClienteMapper.toCliente(clienteRequest));
+            return ResponseEntity.ok(ClienteMapper.toClienteResponse(cliente));
+        }
+        return ResponseEntity.notFound().build();
+    }
+
     @GetMapping("/{id}")
-    public ResponseEntity<ClienteResponse> findClienteById(@PathVariable Long id) {
+    public ResponseEntity<ClienteResponse> findClienteById(
+            @PathVariable Long id,
+            Authentication authentication) {
+        if (!hasAccessToCliente(id, authentication)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         return clienteService.findClienteById(id)
                 .map(cliente -> ResponseEntity.ok(ClienteMapper.toClienteResponse(cliente)))
                 .orElse(ResponseEntity.notFound().build());
@@ -43,7 +71,13 @@ public class ClienteController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ClienteResponse> updateCliente(@PathVariable Long id, @RequestBody ClienteRequest clienteRequest) {
+    public ResponseEntity<ClienteResponse> updateCliente(
+            @PathVariable Long id,
+            @RequestBody ClienteRequest clienteRequest,
+            Authentication authentication) {
+        if (!hasAccessToCliente(id, authentication)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         Optional<Cliente> optCliente = clienteService.findClienteById(id);
 
         if (optCliente.isPresent()) {
@@ -54,7 +88,12 @@ public class ClienteController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCliente(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteCliente(
+            @PathVariable Long id,
+            Authentication authentication) {
+        if (!hasAccessToCliente(id, authentication)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         Optional<Cliente> optCliente = clienteService.findClienteById(id);
 
         if (optCliente.isPresent()) {
@@ -62,6 +101,11 @@ public class ClienteController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();
+    }
+
+    private boolean hasAccessToCliente(Long clienteId, Authentication authentication) {
+        JWTUserData user = (JWTUserData) authentication.getPrincipal();
+        return user.role() == Role.ADMIN || user.userId().equals(clienteId);
     }
 
 }

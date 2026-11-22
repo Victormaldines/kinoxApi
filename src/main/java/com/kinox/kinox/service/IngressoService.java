@@ -25,6 +25,10 @@ public class IngressoService {
         return ingressoRepository.findAll();
     }
 
+    public List<Ingresso> findIngressosByClienteId(Long clienteId) {
+        return ingressoRepository.findByCompraClienteId(clienteId);
+    }
+
     public Optional<Ingresso> findIngressoById(Long id) {
         return ingressoRepository.findById(id);
     }
