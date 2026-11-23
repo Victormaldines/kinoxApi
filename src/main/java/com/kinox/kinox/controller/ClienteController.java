@@ -1,5 +1,6 @@
 package com.kinox.kinox.controller;
 
+import com.kinox.kinox.config.OpenApiConfig;
 import com.kinox.kinox.controller.request.ClienteRequest;
 import com.kinox.kinox.controller.response.ClienteResponse;
 import com.kinox.kinox.entity.Cliente;
@@ -7,6 +8,10 @@ import com.kinox.kinox.mapper.ClienteMapper;
 import com.kinox.kinox.security.JWTUserData;
 import com.kinox.kinox.security.Role;
 import com.kinox.kinox.service.ClienteService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,11 +24,14 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/clientes")
 @RequiredArgsConstructor
+@Tag(name = "Clientes", description = "Perfil do cliente autenticado e gestão de clientes")
+@SecurityRequirement(name = OpenApiConfig.SECURITY_SCHEME_NAME)
 public class ClienteController {
 
     private final ClienteService clienteService;
 
     @GetMapping
+    @Operation(summary = "Listar clientes", description = "Exclusivo ADMIN.")
     public ResponseEntity<List<ClienteResponse>> findAllClientes() {
         List<ClienteResponse> clientes = clienteService.findAllClientes().stream()
                 .map(ClienteMapper::toClienteResponse)
@@ -32,7 +40,8 @@ public class ClienteController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<ClienteResponse> findAuthenticatedCliente(Authentication authentication) {
+    @Operation(summary = "Consultar próprio perfil", description = "Exclusivo CLIENTE.")
+    public ResponseEntity<ClienteResponse> findAuthenticatedCliente(@Parameter(hidden = true) Authentication authentication) {
         JWTUserData user = (JWTUserData) authentication.getPrincipal();
         return clienteService.findClienteById(user.userId())
                 .map(cliente -> ResponseEntity.ok(ClienteMapper.toClienteResponse(cliente)))
@@ -40,9 +49,10 @@ public class ClienteController {
     }
 
     @PutMapping("/me")
+    @Operation(summary = "Atualizar próprio perfil", description = "Exclusivo CLIENTE.")
     public ResponseEntity<ClienteResponse> updateAuthenticatedCliente(
             @RequestBody ClienteRequest clienteRequest,
-            Authentication authentication) {
+            @Parameter(hidden = true) Authentication authentication) {
         JWTUserData user = (JWTUserData) authentication.getPrincipal();
         if (clienteService.findClienteById(user.userId()).isPresent()) {
             Cliente cliente = clienteService.updateCliente(user.userId(), ClienteMapper.toCliente(clienteRequest));
@@ -52,9 +62,10 @@ public class ClienteController {
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Buscar cliente por ID", description = "Permitido para ADMIN ou para o próprio CLIENTE.")
     public ResponseEntity<ClienteResponse> findClienteById(
             @PathVariable Long id,
-            Authentication authentication) {
+            @Parameter(hidden = true) Authentication authentication) {
         if (!hasAccessToCliente(id, authentication)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
@@ -64,6 +75,7 @@ public class ClienteController {
     }
 
     @PostMapping
+    @Operation(summary = "Cadastrar cliente", description = "Exclusivo ADMIN. Para cadastro público utilize POST /auth/register.")
     public ResponseEntity<ClienteResponse> saveCliente(@RequestBody ClienteRequest clienteRequest) {
         Cliente savedCliente = clienteService.saveCliente(ClienteMapper.toCliente(clienteRequest));
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -71,10 +83,11 @@ public class ClienteController {
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Atualizar cliente por ID", description = "Permitido para ADMIN ou para o próprio CLIENTE.")
     public ResponseEntity<ClienteResponse> updateCliente(
             @PathVariable Long id,
             @RequestBody ClienteRequest clienteRequest,
-            Authentication authentication) {
+            @Parameter(hidden = true) Authentication authentication) {
         if (!hasAccessToCliente(id, authentication)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
@@ -88,9 +101,10 @@ public class ClienteController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Remover cliente por ID", description = "Permitido para ADMIN ou para o próprio CLIENTE.")
     public ResponseEntity<Void> deleteCliente(
             @PathVariable Long id,
-            Authentication authentication) {
+            @Parameter(hidden = true) Authentication authentication) {
         if (!hasAccessToCliente(id, authentication)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
