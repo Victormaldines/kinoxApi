@@ -32,6 +32,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
 
+                        // Documentação Swagger / OpenAPI
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+
                         // Rotas públicas de autenticação e cadastro de clientes
                         .requestMatchers(HttpMethod.POST, "/auth/register", "/auth/login").permitAll()
 

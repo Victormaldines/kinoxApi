@@ -9,6 +9,8 @@ import com.kinox.kinox.mapper.ClienteMapper;
 import com.kinox.kinox.security.AuthUserDetails;
 import com.kinox.kinox.security.TokenService;
 import com.kinox.kinox.service.ClienteService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
+@Tag(name = "Autenticação", description = "Cadastro público de clientes e login com geração de token JWT")
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
@@ -30,6 +33,7 @@ public class AuthController {
     private final ClienteService clienteService;
 
     @PostMapping("/register")
+    @Operation(summary = "Cadastrar cliente", description = "Rota pública para registro de novos clientes.")
     public ResponseEntity<ClienteResponse> register(@RequestBody ClienteRequest clienteRequest) {
         Cliente savedCliente = clienteService.saveCliente(ClienteMapper.toCliente(clienteRequest));
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -37,6 +41,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
+    @Operation(summary = "Realizar login", description = "Autentica cliente (email) ou administrador (login) e retorna o token JWT.")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
         UsernamePasswordAuthenticationToken credentials =
                 new UsernamePasswordAuthenticationToken(loginRequest.login(), loginRequest.senha());
