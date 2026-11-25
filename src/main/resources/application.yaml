@@ -27,8 +27,10 @@ springdoc:
 
 kinox:
   security:
+    cors: ${CORS_ALLOWED_ORIGINS}
     secret: ${JWT_SECRET:kinox-dev-secret-key-troque-em-producao}
     expiration-hours: ${JWT_EXPIRATION_HOURS}
     admin:
       login: ${KINOX_ADMIN_LOGIN}
       password: ${KINOX_ADMIN_PASSWORD}
+
